@@ -35,7 +35,7 @@
   ```
 - 自定义词库
   ```
-  重写 PathProvider
+  // 重写 PathProvider
   interface PathProvider{
     // 词库目录
     fun getDictPath():String
@@ -43,7 +43,7 @@
     fun getCacheDir():String
   }
   
-  重写 WordsParser 用于将词库的每行数据解析为 Word 对象
+  // 重写 WordsParser 用于将词库的每行数据解析为 Word 对象
   interface WordsParser {
     fun parse(line: String): Word
   }
