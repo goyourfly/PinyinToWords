@@ -28,7 +28,10 @@
   ```
 - 查找词条
   ```
-  PinyinToWords.findWords("nihao") //你好
+  // [Word(pinyin=nihao, zh=你好, freq=34121)]
+  PinyinToWords.findWords("nihao")
+  // [Word(pinyin=shenme, zh=什么, freq=1041223), Word(pinyin=shenme, zh=甚么, freq=4729), Word(pinyin=shenme, zh=神么, freq=127)]
+  PinyinToWords.findWords("shenme")
   ```
 - 自定义词库
   ```
