@@ -1,1 +1,36 @@
 # PinyinToWords
+
+根据拼音查找对应的词条，类似于词典或输入法功能
+
+### 性能
+- 单次查询一次耗时 0.2ms 左右
+
+### 使用方式
+- 初始化词库，首次初始化会从词库读取拼音并生成字典树，耗时 5s 左右，后续将字典树缓存后耗时 500ms 左右
+  ```
+  PinyinToWords.init()
+  ```
+- 查找词条
+  ```
+  PinyinToWords.findWords("nihao") //你好
+  ```
+- 自定义词库
+  ```
+  重写 PathProvider
+  interface PathProvider{
+    // 词库目录
+    fun getDictPath():String
+    // 数据缓存目录，目前只用于字典树缓存
+    fun getCacheDir():String
+  }
+  重写 WordsParser 用于将词库的每行数据解析为 Word 对象
+  interface WordsParser {
+    fun parse(line: String): Word
+  }
+  ```
+  
+### 实现方式
+- 字典树 + 随机读
+  
+### 感谢
+- 词库是从 https://github.com/ling0322/webdict 获取，共 201195 个词条，感谢大佬
