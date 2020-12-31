@@ -30,7 +30,7 @@ object PinyinToWords {
      * Cost time
      */
     @Synchronized
-    fun init(initCallback:(()->Unit)? = null) {
+    fun init() {
         if (isInit) throw IllegalAccessException("You has init")
         if (!this::pathProvider.isInitialized) {
             pathProvider =
@@ -46,7 +46,6 @@ object PinyinToWords {
         )
         pinyinNode.init()
         isInit = true
-        initCallback?.invoke()
     }
 
     fun isInit() = isInit
