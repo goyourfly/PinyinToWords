@@ -53,4 +53,4 @@
 - 字典树 + 随机读
   
 ### 感谢
-- 词库是从 https://github.com/ling0322/webdict 获取，共 201195 个词条，感谢大佬
+- 词库是从 [webdict](https://github.com/ling0322/webdict) 获取，共 201195 个词条，感谢大佬，原词库没有拼音，用 [TinyPinyin](https://github.com/promeG/TinyPinyin) 生成
