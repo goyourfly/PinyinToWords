@@ -1,4 +1,5 @@
 # PinyinToWords
+[![](https://jitpack.io/v/goyourfly/PinyinToWords.svg)](https://jitpack.io/#goyourfly/PinyinToWords)
 
 根据拼音查找对应的词条，类似于词典或输入法功能
 
@@ -6,6 +7,21 @@
 - 单次查询一次耗时 0.2ms 左右
 
 ### 使用方式
+- Gradle
+
+ ```
+  // Step 1. Add the JitPack repository to your build file
+  // Add it in your root build.gradle at the end of repositories:
+  allprojects {
+    repositories {
+      ...
+      maven { url 'https://jitpack.io' }
+    }
+  }
+  // Step 2. Add the dependency
+  implementation 'com.github.goyourfly:PinyinToWords:1.3'
+ ```
+
 - 初始化词库，首次初始化会从词库读取拼音并生成字典树，耗时 5s 左右，后续将字典树缓存后耗时 500ms 左右
   ```
   PinyinToWords.init()
