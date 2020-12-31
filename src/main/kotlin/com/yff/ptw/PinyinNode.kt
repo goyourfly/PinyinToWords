@@ -5,7 +5,6 @@ import com.yff.ptw.obj.TileNode
 import com.yff.ptw.parse.WordsParser
 import com.yff.ptw.provider.PathProvider
 import java.io.File
-import java.io.FileOutputStream
 import java.io.RandomAccessFile
 
 internal class PinyinNode(
