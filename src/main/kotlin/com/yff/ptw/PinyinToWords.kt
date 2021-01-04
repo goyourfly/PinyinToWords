@@ -17,13 +17,13 @@ object PinyinToWords {
     @Synchronized
     fun setPathProvider(pathProvider: PathProvider) {
         isInit = false
-        PinyinToWords.pathProvider = pathProvider
+        this.pathProvider = pathProvider
     }
 
     @Synchronized
-    fun setPathProvider(wordParser: WordsParser) {
+    fun setWordsParser(wordParser: WordsParser) {
         isInit = false
-        PinyinToWords.wordParser = wordParser
+        this.wordParser = wordParser
     }
 
     /**
