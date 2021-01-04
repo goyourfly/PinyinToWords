@@ -9,7 +9,7 @@
 ### 使用方式
 - Gradle
 
- ```
+  ```
   // Step 1. Add the JitPack repository to your build file
   // Add it in your root build.gradle at the end of repositories:
   allprojects {
@@ -19,8 +19,8 @@
     }
   }
   // Step 2. Add the dependency
-  implementation 'com.github.goyourfly:PinyinToWords:1.2'
- ```
+  implementation 'com.github.goyourfly:PinyinToWords:1.3'
+  ```
 
 - 初始化词库，首次初始化会从词库读取拼音并生成字典树，耗时 5s 左右，后续将字典树缓存后耗时 500ms 左右
   ```
