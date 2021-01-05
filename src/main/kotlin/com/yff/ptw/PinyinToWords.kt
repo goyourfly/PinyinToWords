@@ -32,6 +32,7 @@ object PinyinToWords {
      * Cost time
      */
     @Synchronized
+    @JvmOverloads
     fun init(
         cachePath:File,
         cacheType:CacheType = CacheType.TYPE_PROTO_BUF) {
