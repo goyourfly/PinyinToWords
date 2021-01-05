@@ -1,16 +1,14 @@
 import com.yff.ptw.PinyinToWords
+import com.yff.ptw.obj.CacheType
 import org.junit.Test
+import java.io.File
+import java.nio.file.Paths
 
 class PinyinToWordsTest  {
-
     @Test
-    fun initTest(){
-        PinyinToWords.init()
-    }
-
-    @Test
-    fun pinyinTest(){
-        PinyinToWords.init()
+    fun test(){
+        val cachePath = File(Paths.get("").toAbsolutePath().toFile(),"cache")
+        PinyinToWords.init(cachePath,CacheType.TYPE_PROTO_BUF)
         assert(PinyinToWords.findWords("nihao").first().zh == "你好")
         assert(PinyinToWords.findWords("women").first().zh == "我们")
         assert(PinyinToWords.findWords("tianqi").first().zh == "天气")

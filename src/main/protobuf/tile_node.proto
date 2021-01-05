@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package ptw;
+
+option java_package = "com.yff.ptw.obj";
+option java_outer_classname = "ProtoBuf";
+
+message TileNodePB {
+  optional string      letter    = 1;
+  repeated int64       positions = 2;
+  repeated TileNodePB  children  = 3;
+}

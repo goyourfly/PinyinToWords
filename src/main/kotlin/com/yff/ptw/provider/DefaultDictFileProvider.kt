@@ -2,14 +2,13 @@ package com.yff.ptw.provider
 
 import java.io.File
 import java.io.FileOutputStream
-import java.nio.file.Paths
 
-class DefaultPathProvider : PathProvider {
-    override fun getDictPath(): String {
+class DefaultDictFileProvider(private val cacheDir:File) : DictFileProvider {
+    override fun getDictFile(): File {
         // copy to cache file
-        val outFile = File(getCacheDir() + "/webdict_with_freq_with_pinyin.txt")
+        val outFile = File(cacheDir, "webdict_with_freq_with_pinyin.txt")
         if(outFile.exists() && outFile.length() > 10){
-            return outFile.path
+            return outFile
         }
         if(!outFile.parentFile.exists()){
             outFile.parentFile.mkdirs()
@@ -20,10 +19,6 @@ class DefaultPathProvider : PathProvider {
                 inputStream?.copyTo(fileOutputStream)
             }
         }
-        return outFile.path
-    }
-
-    override fun getCacheDir(): String {
-        return Paths.get("").toAbsolutePath().toString() + "/cache"
+        return outFile
     }
 }

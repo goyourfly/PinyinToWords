@@ -1,23 +1,25 @@
 package com.yff.ptw
 
+import com.yff.ptw.obj.CacheType
 import com.yff.ptw.obj.Word
 import com.yff.ptw.parse.DefaultWordsParser
 import com.yff.ptw.parse.WordsParser
-import com.yff.ptw.provider.DefaultPathProvider
-import com.yff.ptw.provider.PathProvider
+import com.yff.ptw.provider.DefaultDictFileProvider
+import com.yff.ptw.provider.DictFileProvider
+import java.io.File
 import java.io.RandomAccessFile
 
 object PinyinToWords {
-    private lateinit var pathProvider: PathProvider
+    private lateinit var dictFileProvider: DictFileProvider
     private lateinit var wordParser: WordsParser
     private lateinit var pinyinNode: PinyinNode
 
     private var isInit = false
 
     @Synchronized
-    fun setPathProvider(pathProvider: PathProvider) {
+    fun setPathProvider(dictFileProvider: DictFileProvider) {
         isInit = false
-        this.pathProvider = pathProvider
+        this.dictFileProvider = dictFileProvider
     }
 
     @Synchronized
@@ -30,20 +32,35 @@ object PinyinToWords {
      * Cost time
      */
     @Synchronized
-    fun init() {
+    fun init(
+        cachePath:File,
+        cacheType:CacheType = CacheType.TYPE_PROTO_BUF) {
         if (isInit) throw IllegalAccessException("You has init")
-        if (!this::pathProvider.isInitialized) {
-            pathProvider =
-                DefaultPathProvider()
+        if (!this::dictFileProvider.isInitialized) {
+            dictFileProvider =
+                DefaultDictFileProvider(cachePath)
         }
         if (!this::wordParser.isInitialized) {
             wordParser =
                 DefaultWordsParser()
         }
-        pinyinNode = PinyinNode(
-            pathProvider,
-            wordParser
-        )
+
+        when(cacheType) {
+            CacheType.TYPE_JSON -> {
+                pinyinNode = PinyinNode(
+                    cachePath,
+                    dictFileProvider,
+                    wordParser
+                )
+            }
+            CacheType.TYPE_PROTO_BUF -> {
+                pinyinNode = PinyinNodeProtoBuf(
+                    cachePath,
+                    dictFileProvider,
+                    wordParser
+                )
+            }
+        }
         pinyinNode.init()
         isInit = true
     }
@@ -59,8 +76,8 @@ object PinyinToWords {
         checkInit()
         val node = pinyinNode.findNode(pinyin)
         val list = mutableListOf<Word>()
-        RandomAccessFile(pathProvider.getDictPath(),"rw").use { ra ->
-            for(p in node.value){
+        RandomAccessFile(dictFileProvider.getDictFile(),"rw").use { ra ->
+            for(p in node.positions){
                 ra.seek(p)
                 val line = String(ra.readLine().toByteArray(Charsets.ISO_8859_1),Charsets.UTF_8)
                 list.add(wordParser.parse(line))

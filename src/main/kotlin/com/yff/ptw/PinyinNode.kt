@@ -3,15 +3,16 @@ package com.yff.ptw
 import com.google.gson.Gson
 import com.yff.ptw.obj.TileNode
 import com.yff.ptw.parse.WordsParser
-import com.yff.ptw.provider.PathProvider
+import com.yff.ptw.provider.DictFileProvider
 import java.io.File
 import java.io.RandomAccessFile
 
-internal class PinyinNode(
-    private val pathProvider: PathProvider,
-    private val wordsParser: WordsParser
+open class PinyinNode(
+    protected val cachePath:File,
+    protected val dictFileProvider: DictFileProvider,
+    protected val wordsParser: WordsParser
 ) {
-    private lateinit var root:TileNode
+    protected lateinit var root:TileNode
 
     @Throws(Throwable::class)
     fun init() {
@@ -23,7 +24,7 @@ internal class PinyinNode(
             }
         }
         root = TileNode(' ', mutableListOf(), mutableListOf())
-        RandomAccessFile(File(pathProvider.getDictPath()), "rw").use { ra ->
+        RandomAccessFile(dictFileProvider.getDictFile(), "rw").use { ra ->
             while (true) {
                 val position = ra.filePointer
                 val line = ra.readLine() ?: break
@@ -35,11 +36,11 @@ internal class PinyinNode(
         }
     }
 
-    private fun cacheFile():String {
-        return pathProvider.getCacheDir() + "/treecache.json"
+    protected open fun cacheFile():String {
+        return File(cachePath,"treecache.json").absolutePath
     }
 
-    private fun cacheTree(){
+    protected open fun cacheTree(){
         val file = File(cacheFile())
         if(file.exists() && file.length() > 0){
             file.delete()
@@ -52,13 +53,14 @@ internal class PinyinNode(
         file.writeText(json)
     }
 
-    private fun readFromCache():TileNode?{
+    protected open fun readFromCache():TileNode?{
         try {
             val file = File(cacheFile())
-            val json = file.readText()
-            return Gson().fromJson<TileNode>(json,TileNode::class.java)
+            return Gson().fromJson<TileNode>(file.readText(),TileNode::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
+            val file = File(cacheFile())
+            file.delete()
         }
         return null
     }
@@ -74,7 +76,7 @@ internal class PinyinNode(
     private tailrec fun addNode(node: TileNode, pinyin: String, offset: Int, position: Long): TileNode {
         if (offset > pinyin.length - 1) {
             // reach end
-            node.value.add(position)
+            node.positions.add(position)
             return node
         }
         val c = pinyin[offset]

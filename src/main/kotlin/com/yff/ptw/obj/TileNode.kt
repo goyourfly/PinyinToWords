@@ -1,3 +1,11 @@
 package com.yff.ptw.obj
 
-data class TileNode(val letter: Char, val children: MutableList<TileNode>, val value: MutableList<Long>)
+import com.google.gson.annotations.SerializedName
+
+data class TileNode(
+    @SerializedName("a")
+    var letter: Char,
+    @SerializedName("b")
+    var children: MutableList<TileNode>,
+    @SerializedName("c")
+    var positions: MutableList<Long>)
