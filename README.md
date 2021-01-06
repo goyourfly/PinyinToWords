@@ -22,9 +22,13 @@
   implementation 'com.github.goyourfly:PinyinToWords:VERSION'
   ```
 
-- 初始化词库，首次初始化会从词库读取拼音并生成字典树，耗时 5s 左右，后续将字典树缓存后耗时 500ms 左右
+- 初始化词库，首次初始化会从词库读取拼音并生成字典树，耗时 5s 左右，后续将字典树缓存后耗时 150ms
   ```
-  PinyinToWords.init()
+  /**
+   * cachePath 缓存路径
+   * cacheType 字典树缓存类型，ProtoBuf or Json，默认 ProtoBuf
+   */
+  PinyinToWords.init(cachePath:File,cacheType:CacheType)
   ```
 - 查找词条
   ```
@@ -37,10 +41,8 @@
   ```
   // 重写 PathProvider
   interface PathProvider{
-    // 词库目录
-    fun getDictPath():String
-    // 数据缓存目录，目前只用于字典树缓存
-    fun getCacheDir():String
+    // 词库文件
+    fun getDictFile():String
   }
   
   // 重写 WordsParser 用于将词库的每行数据解析为 Word 对象
