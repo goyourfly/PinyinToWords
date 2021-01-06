@@ -61,8 +61,8 @@ class PinyinNodeProtoBuf(
     }
 
     private fun generateNode(proto: ProtoBuf.TileNodePB): TileNode {
-        val node = TileNode(proto.letter[0], mutableListOf(), mutableListOf())
-        node.letter = proto.letter[0]
+        val node = TileNode(proto.letter, mutableListOf(), mutableListOf())
+        node.letter = proto.letter
         node.positions.addAll(proto.positionsList)
         node.children.addAll(proto.childrenList.map { generateNode(it) })
         return node

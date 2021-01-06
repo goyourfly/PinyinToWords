@@ -23,7 +23,7 @@ open class PinyinNode(
                 return
             }
         }
-        root = TileNode(' ', mutableListOf(), mutableListOf())
+        root = TileNode("", mutableListOf(), mutableListOf())
         RandomAccessFile(dictFileProvider.getDictFile(), "rw").use { ra ->
             while (true) {
                 val position = ra.filePointer
@@ -32,6 +32,7 @@ open class PinyinNode(
                 val wd = wordsParser.parse(lineUTF8)
                 addNode(root, wd.pinyin, 0, position)
             }
+            trimNode(root)
             cacheTree()
         }
     }
@@ -69,8 +70,23 @@ open class PinyinNode(
         return File(cacheFile()).exists()
     }
 
-    fun findNode(pinyin: String): TileNode {
-        return findNode(root, pinyin, 0)
+    fun findNode(pinyin: String): TileNode? {
+        return findNode(root, pinyin)
+    }
+
+    /**
+     * 缩短路径
+     */
+    private fun trimNode(node: TileNode){
+        if(node.children.size == 1 && node.positions.isEmpty()){
+            val child = node.children.first()
+            node.letter = node.letter + child.letter
+            node.children = child.children
+            node.positions = child.positions
+        }
+        for(child in node.children){
+            trimNode(child)
+        }
     }
 
     private tailrec fun addNode(node: TileNode, pinyin: String, offset: Int, position: Long): TileNode {
@@ -80,8 +96,13 @@ open class PinyinNode(
             return node
         }
         val c = pinyin[offset]
-        val subNode = node.children.find { it.letter == c } ?: TileNode(
-            c,
+        // 非 a..z 字母退出
+        if(c.toInt() < 97 || c.toInt() > 122){
+            return node
+        }
+        val cStr = c.toString()
+        val subNode = node.children.find { it.letter == cStr } ?: TileNode(
+            cStr,
             mutableListOf(),
             mutableListOf()
         ).also {
@@ -90,19 +111,13 @@ open class PinyinNode(
         return addNode(subNode, pinyin, offset + 1, position)
     }
 
-    private tailrec fun findNode(node: TileNode, pinyin: String, offset: Int): TileNode {
-        if (offset > pinyin.length - 1) {
-            // reach end
+    private tailrec fun findNode(node: TileNode, pinyin: String): TileNode? {
+        if(pinyin.isEmpty()){
             return node
         }
-        val c = pinyin[offset]
-        val subNode = node.children.find { it.letter == c } ?: TileNode(
-            c,
-            mutableListOf(),
-            mutableListOf()
-        ).also {
-            node.children.add(it)
-        }
-        return findNode(subNode, pinyin, offset + 1)
+        val subNode = node.children.find {
+            pinyin.startsWith(it.letter)
+        } ?: return null
+        return findNode(subNode, pinyin.substring(subNode.letter.length))
     }
 }

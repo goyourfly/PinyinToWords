@@ -75,8 +75,8 @@ object PinyinToWords {
     @Synchronized
     fun findWords(pinyin:String):List<Word> {
         checkInit()
-        val node = pinyinNode.findNode(pinyin)
         val list = mutableListOf<Word>()
+        val node = pinyinNode.findNode(pinyin)?:return list
         RandomAccessFile(dictFileProvider.getDictFile(),"rw").use { ra ->
             for(p in node.positions){
                 ra.seek(p)

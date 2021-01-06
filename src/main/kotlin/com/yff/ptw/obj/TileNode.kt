@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class TileNode(
     @SerializedName("a")
-    var letter: Char,
+    var letter: String,
     @SerializedName("b")
     var children: MutableList<TileNode>,
     @SerializedName("c")
